@@ -1,4 +1,6 @@
-# Physics Animations of several Branches
+# Physics Animations
+
+Physics animations written in ``C`` and animated with the Python library ``manim``.
 
 <!-- ## Classical Mechanics
 

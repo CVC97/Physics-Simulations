@@ -47,7 +47,7 @@ class tsunami_scene(Scene):
         self.add(CVC)
 
         # header
-        text_heat = Tex(r"1D-d'Alembert-Gleichung: $\partial_t^2\xi(x, t)=u^2(x)\cdot\partial_x^2\xi(x, t)$", font_size = 48).align_on_border(UP + LEFT, buff = 0.5).shift(0.75 * RIGHT)
+        text_heat = Tex(r"1D-d'Alembert Equation: $\partial_t^2\xi(x, t)=u^2(x)\cdot\partial_x^2\xi(x, t)$", font_size = 48).align_on_border(UP + LEFT, buff = 0.5).shift(0.75 * RIGHT)
         self.add(text_heat)
 
         # riff: coordinate system
@@ -57,7 +57,7 @@ class tsunami_scene(Scene):
         y_riff_length = 1.25
         x_riff_dict = dict(zip(
             [OCEAN_X_LEFT, OCEAN_X_RIFF_LEFT, OCEAN_X_BEACH_LEFT, OCEAN_X_BEACH_RIGHT, OCEAN_X_RIFF_RIGHT, OCEAN_X_RIGHT], 
-            [r"$x_\mathrm{L}$", r"$x_\mathrm{Riff,\,L}$", r"$x_\mathrm{Strand,\,L}$", r"$x_\mathrm{Strand,\,R}$", r"$x_\mathrm{Riff,\,R}$", r"$x_\mathrm{R}$"]))
+            [r"$x_\mathrm{L}$", r"$x_\mathrm{Riff,\,L}$", r"$x_\mathrm{Beach,\,L}$", r"$x_\mathrm{Beach,\,R}$", r"$x_\mathrm{Riff,\,R}$", r"$x_\mathrm{R}$"]))
         y_riff_dict = dict(zip([5000, 3000, 1000], [0, -2000, -4000]))
         npla_riff = NumberPlane(
             x_range = x_riff_range, y_range = y_riff_range, x_length = x_riff_length, y_length = y_riff_length,
