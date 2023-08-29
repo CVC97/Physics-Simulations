@@ -96,19 +96,16 @@ int dAlembertFTCS(double t, double y_old[], double y[], struct params_dAlembert 
             printf("ERROR! beta^2 exceeds 1, please adjust delta_t (decrease) and / or delta_x (increase) for valid results.\n");
             return 1;
         }
-
-        double f_east_ghost = y[N-1];                                                                    // rechter Ghost
+        double f_east_ghost = y[N-1];                                                                       // right ghost
         double f_west_ghost;
 
         if (0 <= t && t <= 2*cvc_PI/OSZ_OMEGA) {
-            f_west_ghost = wave_excitation_A(t);                                                 // linker Ghost
+            f_west_ghost = wave_excitation_A(t);                                                            // left ghost
         } else {
             f_west_ghost = 0;
         }
-
-        // double f_west_ghost = wave_excitation_A(t);                                                 // linker Ghost
+        // double f_west_ghost = wave_excitation_A(t);                                                 // left ghost
         
-
         double delta_f_t = 0; //cvc_diff
 
         if (i == 0) {
@@ -125,20 +122,17 @@ int dAlembertFTCS(double t, double y_old[], double y[], struct params_dAlembert 
         y_old[i] = y[i];
         y[i] = y_temp[i];
     }
-
     free(y_temp);
     return 0;
 }
 
 
 int main(void) {
-
     // ocean initialization
     double *y_wave = (double*) calloc(N, sizeof(double));
     double *y_wave_old = (double*) calloc(N, sizeof(double));
-    double x = OCEAN_X_LEFT;                                                                // Laufvariable der Position im Ozean
+    double x = OCEAN_X_LEFT;                                                                                // iteration variable of the ocean position
     double t = 0;                                            
-
     FILE* ocean_file = fopen("data/tsunami_data.csv", "w");
     fprintf(ocean_file, "0");
     for (int n_x = 0; n_x < N; n_x++) {

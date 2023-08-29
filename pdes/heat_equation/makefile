@@ -1,13 +1,13 @@
-# Datei, die kompiliert werden soll (ohne Endung)
+# file names of the files to be complied
 BINARY := heat_equation
 HEADER := cvc_numerics
 
 
-# Flags
+# flags
 FLAGS := -lm -lgsl -lgslcblas -Wall -std=c99
 
 
-# Kompilieren
+# compile
 $(BINARY): $(BINARY).o ../../$(HEADER).o
 	gcc $(BINARY).o ../../$(HEADER).o -o $(BINARY) $(FLAGS)
 
@@ -18,19 +18,20 @@ $(HEADER).o: ../../$(HEADER).c
 	gcc -c ../../$(HEADER).c
 
 
-# Ausführen
+# run
 run: $(BINARY)
 	./$< $(ARGS)
 
 
+# animate
 animate:
 	manim -pqh --fps 60 $(BINARY)_animation.py $(BINARY)_scene
 
 
-# Clean
+# clean
 clean:
 	rm -f *.o
-	rm -f $(HEADER).o
+	rm -f ../../$(HEADER).o
 	rm -f *.exe
 	rm -f $(BINARY)
 	rm -f *.dat *.csv *.txt

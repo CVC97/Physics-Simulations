@@ -1,5 +1,5 @@
 # file names of the files to be complied
-BINARY := tsunami
+BINARY := three_body_problem
 HEADER := cvc_numerics
 
 

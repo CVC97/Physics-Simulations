@@ -37,13 +37,13 @@ int heat_FTCS(double t, double y[], double dt) {
     return 0;
 }
 
+
 int main(void) {
     // time parameters
     double time = 0;
     double time_max = 1;
     double delta_time = cvc_npow(delta_x, 2) / (2.1 * D);         
     printf("delta_time: %g\n", delta_time);
-
     double *y = (double*) calloc(N, sizeof(double));                // initializing heat field
 
     // file initialization
@@ -68,7 +68,6 @@ int main(void) {
             fprintf(heat_file, ", %g", y[i]);
         }
     }
-
     free(y);
     fclose(heat_file);
     return 0;
