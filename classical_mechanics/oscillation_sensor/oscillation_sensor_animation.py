@@ -75,7 +75,8 @@ class oscillation_sensor_scene(Scene):
         self.add(CVC) 
 
         # headline and vectorfeld
-        text_oszi = Tex(r"Oscillation Sensor: $\Vec{F}=m\ddot{\Vec{x}}=-k\Vec{x}$ (Newton)", font_size = 48).align_on_border(UP + LEFT, buff = 0.5).shift(0.5 * RIGHT)  
+        #text_oszi = Tex(r"Oscillation Sensor: $\Vec{F}=m\ddot{\Vec{x}}=-k\Vec{x}$ (Newton)", font_size = 48).align_on_border(UP + LEFT, buff = 0.5).shift(0.5 * RIGHT)  
+        text_oszi = Title(r"Oscillation Sensor", font_size = 48).align_on_border(UP + LEFT, buff = 0.5).shift(0.5 * RIGHT) 
         eq_field = Tex(
             r"$\Vec{F}=-k\left(1-\frac{r_0}{\sqrt{(x-x_1)^2+y^2}}\right)\begin{bmatrix} x-x_1 \\ y \end{bmatrix}-k\left(1-\frac{r_0}{\sqrt{(x-x_2)^2+y^2}}\right)\begin{bmatrix} x-x_2 \\ y \end{bmatrix}$", 
             color = WHITE, font_size = 32).align_on_border(DOWN + LEFT, buff = 0.5).shift(1.5 * RIGHT)  
@@ -118,12 +119,12 @@ class oscillation_sensor_scene(Scene):
             connec_B.become(Spring(start = np.array([5, 0, 0]), end = np.array([x_mass, y_mass, 0]), k = spring_k, tip_buff = spring_tip_buff, nodes = spring_nodes))
 
 
-        self.add(text_oszi)#, line_A, line_B, A, B, mass1, connec_A, connec_B)#, eq_field, avf)
+        self.add(text_oszi, line_A, line_B, A, B, mass1, connec_A, connec_B)#, eq_field, avf)
         # self.play(Write(text_oszi), run_time = 1.5)
+        #self.wait(0.5)
+        #self.play(FadeIn(line_A), FadeIn(line_B), FadeIn(mass1), FadeIn(connec_A), FadeIn(connec_B), FadeIn(A), FadeIn(B), run_time = 3)
         self.wait(0.5)
-        self.play(FadeIn(line_A), FadeIn(line_B), FadeIn(mass1), FadeIn(connec_A), FadeIn(connec_B), FadeIn(A), FadeIn(B), run_time = 3)
-        self.wait(0.5)
-        self.play(Write(eq_field), Create(avf), run_time = 3)
+        self.play(Write(eq_field), FadeIn(avf), run_time = 3)
         self.wait(1.5)
 
         mass1.add_updater(mass_updater)

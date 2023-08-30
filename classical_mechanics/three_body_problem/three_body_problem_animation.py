@@ -29,7 +29,7 @@ class three_body_problem_scene(Scene):
         self.add(CVC) 
 
         # headline and vectorfeld
-        text_TBP = Tex("Numerical Solution of the 3-Body-Problem", font_size = 48).align_on_border(UP + LEFT, buff = 0.5).shift(0.5 * RIGHT)  
+        text_TBP = Title("The 3-Body-Problem", font_size = 48).align_on_border(UP + LEFT, buff = 0.5).shift(0.5 * RIGHT)  
 
         # creation of the 3 suns
         sun1 = VGroup(Circle(color = WHITE, radius = 0.1, fill_color = WHITE, fill_opacity = 0.5))
@@ -118,10 +118,10 @@ class three_body_problem_scene(Scene):
         sun3.move_to(r3_2D[0,:])
 
         # adding the suns
-        self.add(text_TBP)
         self.add(sun1, sun2, sun3)
+        self.add(text_TBP)
         self.wait(1.5)
-        self.play(Unwrite(text_TBP), run_time = 3)
+        #self.play(Unwrite(text_TBP), run_time = 3)
 
         # adding the updater
         sun1.add_updater(sun_updater)
@@ -130,7 +130,10 @@ class three_body_problem_scene(Scene):
 
         # timeline as ValueTracker
         self.play(timeline.animate.set_value(5), rate_func= linear, run_time = run_time)
-        self.wait(1.5)
+        sun1.remove_updater(sun_updater)
+        sun2.remove_updater(sun_updater)
+        sun3.remove_updater(sun_updater)
+        self.wait(5)
 
 
 # 3D animation

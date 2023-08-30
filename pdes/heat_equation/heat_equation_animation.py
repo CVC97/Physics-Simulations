@@ -19,7 +19,7 @@ class heat_equation_scene(Scene):
 
 
         # header
-        text_heat = Tex(r"Heat Equation: $\partial_t T(x,t)=D\cdot\partial_x^2 T(x, t)$", font_size = 48).align_on_border(UP + LEFT, buff = 0.5).shift(RIGHT)
+        text_heat = Title(r"Heat Equation: $\partial_t T(x,t)=D\cdot\partial_x^2 T(x, t)$", font_size = 48).align_on_border(UP + LEFT, buff = 0.5).shift(RIGHT)
         self.add(text_heat)
 
         # heat sources
@@ -54,5 +54,7 @@ class heat_equation_scene(Scene):
         # adding dynamic
         time = ValueTracker(0)
         Rode.add_updater(T_updater)
-        self.wait(0.5)
+        self.wait(1.5)
         self.play(time.animate.set_value(1), rate_func= linear, run_time = 19.5)
+        Rode.remove_updater(T_updater)
+        self.wait(5)

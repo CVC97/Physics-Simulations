@@ -51,7 +51,7 @@ class pendulums_scene(Scene):
         self.add(CVC) 
 
         # headline and vectorfeld
-        text_pendulums = Tex(r"Coupled Pendulums for Different Integrators", font_size = 48).align_on_border(UP + LEFT, buff = 0.5).shift(0.5 * RIGHT) 
+        text_pendulums = Title(r"Coupled Spring-Mass System", font_size = 48).align_on_border(UP + LEFT, buff = 0.5).shift(0.5 * RIGHT) 
 
         x_line = -5.5
         y_sep = 0.8
@@ -105,7 +105,7 @@ class pendulums_scene(Scene):
             spring.become(ccs(spring_pos, spring.y))
 
 
-        self.wait(0.5)
+        self.wait(1.5)
         timeline = ValueTracker(0)
 
         spring_euler.add_updater(spring_updater)
@@ -114,4 +114,4 @@ class pendulums_scene(Scene):
         spring_verlet.add_updater(spring_updater)
 
         self.play(timeline.animate.set_value(10), rate_func = linear, run_time = 25)
-        self.wait(1.5)
+        self.wait(5)

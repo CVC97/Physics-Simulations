@@ -47,7 +47,7 @@ class tsunami_scene(Scene):
         self.add(CVC)
 
         # header
-        text_heat = Tex(r"1D-d'Alembert Equation: $\partial_t^2\xi(x, t)=u^2(x)\cdot\partial_x^2\xi(x, t)$", font_size = 48).align_on_border(UP + LEFT, buff = 0.5).shift(0.75 * RIGHT)
+        text_heat = Title(r"1D-d'Alembert Equation: $\partial_t^2\xi(x, t)=u^2(x)\cdot\partial_x^2\xi(x, t)$", font_size = 48).align_on_border(UP + LEFT, buff = 0.5).shift(0.75 * RIGHT)
         self.add(text_heat)
 
         # riff: coordinate system
@@ -110,5 +110,7 @@ class tsunami_scene(Scene):
         # adding dynamic
         time = ValueTracker(0)
         ax_wave.add_updater(wave_updater)
-        self.wait(0.5)
+        self.wait(1.5)
         self.play(time.animate.set_value(1), rate_func = linear, run_time = 29.5)
+        ax_wave.remove_updater(wave_updater)
+        self.wait(5)

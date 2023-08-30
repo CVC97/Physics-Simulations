@@ -33,7 +33,7 @@ class cellular_automaton_scene(Scene):
         self.add(CVC)
 
         # headline
-        headline = Tex(r"Model for the Spread of Infectious Diseases", font_size = 48).align_on_border(UP + LEFT, buff = 0.5).shift(0.5 * RIGHT)
+        headline = Title(r"Model for the Spread of Infectious Diseases", font_size = 48).align_on_border(UP + LEFT, buff = 0.5).shift(0.5 * RIGHT)
 
         # legend
         square_susceptible = Square(color = WHITE, fill_opacity = 0.5, side_length = 0.3, stroke_width = 1).move_to([2, 2.1, 0])
@@ -104,7 +104,7 @@ class cellular_automaton_scene(Scene):
         # # ### total grid, t = 0 ###
         total_grid = make_grid_from_array(soi_grid_over_time_array_c, 0)
         self.add(total_grid)
-        self.wait(1)
+        self.wait(1.5)
         ### total grid t ###
         for t in range(1, 101):
             self.remove(total_grid)
@@ -115,4 +115,4 @@ class cellular_automaton_scene(Scene):
                 main_T = Tex(f"$t={t}$", color = WHITE, font_size = 24).move_to([-1, 2.45, 0])
                 self.add(main_T)
             self.wait(1/5)
-        self.wait(3)
+        self.wait(5)
