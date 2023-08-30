@@ -19,7 +19,8 @@ class heat_equation_scene(Scene):
 
 
         # header
-        text_heat = Title(r"Heat Equation: $\partial_t T(x,t)=D\cdot\partial_x^2 T(x, t)$", font_size = 48).align_on_border(UP + LEFT, buff = 0.5).shift(RIGHT)
+        # text_heat = Title(r"Heat Equation: $\partial_t T(x,t)=D\cdot\partial_x^2 T(x, t)$", font_size = 48).align_on_border(UP + LEFT, buff = 0.5).shift(RIGHT)
+        text_heat = Title(r"Heat Equation", font_size = 48).align_on_border(UP + LEFT, buff = 0.5).shift(RIGHT)
         self.add(text_heat)
 
         # heat sources

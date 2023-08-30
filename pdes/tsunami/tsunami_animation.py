@@ -47,7 +47,8 @@ class tsunami_scene(Scene):
         self.add(CVC)
 
         # header
-        text_heat = Title(r"1D-d'Alembert Equation: $\partial_t^2\xi(x, t)=u^2(x)\cdot\partial_x^2\xi(x, t)$", font_size = 48).align_on_border(UP + LEFT, buff = 0.5).shift(0.75 * RIGHT)
+        # text_heat = Title(r"1D-d'Alembert Equation: $\partial_t^2\xi(x, t)=u^2(x)\cdot\partial_x^2\xi(x, t)$", font_size = 48).align_on_border(UP + LEFT, buff = 0.5).shift(0.75 * RIGHT)
+        text_heat = Title(r"1D-d'Alembert Equation", font_size = 48).align_on_border(UP + LEFT, buff = 0.5).shift(0.75 * RIGHT)
         self.add(text_heat)
 
         # riff: coordinate system

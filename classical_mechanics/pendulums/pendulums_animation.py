@@ -56,7 +56,7 @@ class pendulums_scene(Scene):
         x_line = -5.5
         y_sep = 0.8
 
-        y_euler = 1.7
+        y_euler = 1.5
         y_rk2 = y_euler - 2*y_sep
         y_rk4 = y_euler - 4*y_sep
         y_verlet = y_euler - 6*y_sep

@@ -124,8 +124,8 @@ class oscillation_sensor_scene(Scene):
         #self.wait(0.5)
         #self.play(FadeIn(line_A), FadeIn(line_B), FadeIn(mass1), FadeIn(connec_A), FadeIn(connec_B), FadeIn(A), FadeIn(B), run_time = 3)
         self.wait(0.5)
-        self.play(Write(eq_field), FadeIn(avf), run_time = 3)
-        self.wait(1.5)
+        self.play(FadeIn(avf), run_time = 3)#Write(eq_field), 
+        self.wait(0.5)
 
         mass1.add_updater(mass_updater)
         connec_A.add_updater(spring_A_updater)
