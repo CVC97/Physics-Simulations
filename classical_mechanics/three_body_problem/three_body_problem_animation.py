@@ -130,6 +130,7 @@ class three_body_problem_scene(Scene):
 
         # timeline as ValueTracker
         self.play(timeline.animate.set_value(5), rate_func= linear, run_time = run_time)
+        self.wait(1.5)
 
 
 # 3D animation
