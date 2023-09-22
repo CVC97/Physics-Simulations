@@ -8,19 +8,21 @@ typedef int ode_func(double, const double[], double[], void*);
 
 
 // physical parameters
-const double m1 = 1;                                                // mass for the upper pendulum
-const double m2 = 1;                                                // mass for the lower pendulum
-const double l1 = 1;                                                // lenght 'L' between origin and mass1 as well as between mass1 and mass2
+const double m1 = 1;                                                    // mass for the upper pendulum
+const double m2 = 1;                                                    // mass for the lower pendulum
+const double l1 = 1;                                                    // lenght 'L' between origin and mass1 as well as between mass1 and mass2
 const double l2 = 1;
 
 
 // initial conditions
 const double THETA1 = 3.0 / 8 * cvc_PI;
-const double THETA2 = cvc_PI / 2;
+const double THETA2 = 0;
+const double THETA1_V = 0;
+const double THETA2_V = 0;
 
 
 // integration parameters
-const double T_max = 20;
+const double T_max = 100;
 const double delta_t = 10e-4;
 const int dimension = 4;                                                // dimension of the state vector
 
@@ -59,8 +61,6 @@ int ODE_double_pendulum(double t, const double y[], double f[], void *params) {
     double den1 = (m1 + m2)*l1 - m2*l1*cvc_npow(cos(del), 2); 
     double den2 = l2 / l1 * den1;
 
-    // f[1] = - m2 / (m1 + m2) * (theta2_a * cos(theta1-theta2) + cvc_npow(theta2_v, 2) * sin(theta1-theta2)) - cvc_EARTH_GRAVITATION / L * sin(theta1);
-    // f[3] = - (theta1_a * cos(theta1-theta2) + cvc_npow(theta1_v, 2) * sin(theta1-theta2)) - cvc_EARTH_GRAVITATION / L * sin(theta2);
     f[1] = (m2*l1*theta1_v * sin(del)*cos(del) + m2*cvc_EARTH_GRAVITATION*sin(theta2)*cos(del) + m2*l2*cvc_npow(theta2_v, 2)*sin(del) - (m1+m2)*cvc_EARTH_GRAVITATION*sin(theta1)) / den1;
     f[3] = (-m2*l2*cvc_npow(theta2_v, 2)*sin(del)*cos(del) + (m1+m2)*cvc_EARTH_GRAVITATION*sin(theta1)*cos(del) - (m1+m2)*l1*cvc_npow(theta1_v, 2)*sin(del) - (m1+m2)*cvc_EARTH_GRAVITATION*sin(theta2)) / den2;
     return 0; 
@@ -69,8 +69,8 @@ int ODE_double_pendulum(double t, const double y[], double f[], void *params) {
 
 int main(void) {
     double t = 0;                                                       // time variable 't' running until 'T_max'
-    double y_numerical[] = {THETA1, THETA2, 0, 0, 0, 0};                // numerical state vector
-    double y_analytical[] = {THETA1, THETA2, 0, 0, 0, 0};               // analytical state vector 
+    double y_numerical[] = {THETA1, THETA1_V, THETA2, THETA2_V};        // numerical state vector
+    double y_analytical[] = {THETA1, THETA1_V, THETA2, THETA2_V};       // analytical state vector 
 
     // determining intial values C1, C2, omega1, and omega2 from the initial state
     double my = m2 / m1;
