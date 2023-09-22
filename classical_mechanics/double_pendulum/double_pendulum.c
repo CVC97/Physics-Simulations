@@ -8,20 +8,21 @@ typedef int ode_func(double, const double[], double[], void*);
 
 
 // physical parameters
-const double m1 = 1;                                              // mass for the upper pendulum
-const double m2 = 1;                                              // mass for the lower pendulum
-const double L = 1;                                               // lenght 'L' between origin and mass1 as well as between mass1 and mass2
+const double m1 = 1;                                                // mass for the upper pendulum
+const double m2 = 1;                                                // mass for the lower pendulum
+const double l1 = 1;                                                // lenght 'L' between origin and mass1 as well as between mass1 and mass2
+const double l2 = 1;
 
 
 // initial conditions
 const double THETA1 = 3.0 / 8 * cvc_PI;
-const double THETA2 = 0;
+const double THETA2 = cvc_PI / 2;
 
 
 // integration parameters
-const double T_max = 10;
-const double delta_t = 10e-5;
-const int dimension = 6;                                    // dimension of the state vector
+const double T_max = 20;
+const double delta_t = 10e-4;
+const int dimension = 4;                                                // dimension of the state vector
 
 
 // writes analytical solution for given t and paramters *params in state vector y
@@ -37,7 +38,7 @@ int double_pendulum_analytical(double t, double y[], void *params) {
 
     // calculating the state of the double pendulum for given t
     y[0] = C1 * cos(omega1*t + phi1) + C2 * cos(omega2*t + phi2);
-    y[3] = -C1 * sqrt((1+my) / my) * cos(omega1*t + phi1) + C2 * sqrt((1+my) / my) * cos(omega2*t + phi2);
+    y[2] = -C1 * sqrt((1+my) / my) * cos(omega1*t + phi1) + C2 * sqrt((1+my) / my) * cos(omega2*t + phi2);
     return 0;
 }
 
@@ -45,19 +46,23 @@ int double_pendulum_analytical(double t, double y[], void *params) {
 // ODE for the double pendulum with structure of state vector y = [theta1, theta1_v, theta1_a, theta2, theta2_v, theta2_a]
 int ODE_double_pendulum(double t, const double y[], double f[], void *params) {
     // state of the double pendulum
-    double theta1 = y[0];                                   // angel of mass1
-    double theta1_v = y[1];                                 // angular velocity of mass1
-    double theta1_a = y[2];                                 // angular acceleration of mass1
-    double theta2 = y[3];                                   // angel of mass2
-    double theta2_v = y[4];                                 // angular velocity of mass2
-    double theta2_a = y[5];                                 // angular acceleration of mass2
+    double theta1 = y[0];                                               // angel of mass1
+    double theta1_v = y[1];                                             // angular velocity of mass1
+    double theta2 = y[2];                                               // angel of mass2
+    double theta2_v = y[3];                                             // angular velocity of mass2
 
-    f[0] = theta1_v;                                        // transfering theta1_v to f array
-    f[3] = theta2_v;                                        // transfering theta2_v to f_array
+    f[0] = theta1_v;                                                    // transfering theta1_v to f array
+    f[2] = theta2_v;                                                    // transfering theta2_v to f_array
 
     // calculating the new accelerations for both masses
-    f[1] = - m2 / (m1 + m2) * (theta2_a * cos(theta1-theta2) + cvc_npow(theta2_v, 2) * sin(theta1-theta2)) - cvc_EARTH_GRAVITATION / L * sin(theta1);
-    f[4] = - (theta1_a * cos(theta1-theta2) + cvc_npow(theta1_v, 2) * sin(theta1-theta2)) - cvc_EARTH_GRAVITATION / L * sin(theta2);
+    double del = theta2 - theta1;
+    double den1 = (m1 + m2)*l1 - m2*l1*cvc_npow(cos(del), 2); 
+    double den2 = l2 / l1 * den1;
+
+    // f[1] = - m2 / (m1 + m2) * (theta2_a * cos(theta1-theta2) + cvc_npow(theta2_v, 2) * sin(theta1-theta2)) - cvc_EARTH_GRAVITATION / L * sin(theta1);
+    // f[3] = - (theta1_a * cos(theta1-theta2) + cvc_npow(theta1_v, 2) * sin(theta1-theta2)) - cvc_EARTH_GRAVITATION / L * sin(theta2);
+    f[1] = (m2*l1*theta1_v * sin(del)*cos(del) + m2*cvc_EARTH_GRAVITATION*sin(theta2)*cos(del) + m2*l2*cvc_npow(theta2_v, 2)*sin(del) - (m1+m2)*cvc_EARTH_GRAVITATION*sin(theta1)) / den1;
+    f[3] = (-m2*l2*cvc_npow(theta2_v, 2)*sin(del)*cos(del) + (m1+m2)*cvc_EARTH_GRAVITATION*sin(theta1)*cos(del) - (m1+m2)*l1*cvc_npow(theta1_v, 2)*sin(del) - (m1+m2)*cvc_EARTH_GRAVITATION*sin(theta2)) / den2;
     return 0; 
 }
 
@@ -70,8 +75,8 @@ int main(void) {
     // determining intial values C1, C2, omega1, and omega2 from the initial state
     double my = m2 / m1;
     double my_bar = sqrt((1+my) / my);
-    double omega1 = cvc_EARTH_GRAVITATION / L * (1 + my + sqrt((1+my) * my));
-    double omega2 = cvc_EARTH_GRAVITATION / L * (1 + my - sqrt((1+my) * my));
+    double omega1 = cvc_EARTH_GRAVITATION / l1 * (1 + my + sqrt((1+my) * my));
+    double omega2 = cvc_EARTH_GRAVITATION / l2 * (1 + my - sqrt((1+my) * my));
     double C1 = THETA1 / 2 - THETA2 / (2*my_bar);
     double C2 = THETA1 / 2 + THETA2 / (2*my_bar);
     double params[] = {C1, C2, omega1, omega2, my};
@@ -79,11 +84,11 @@ int main(void) {
     // setting up the files and adding initial state
     FILE* angel_numerical_file = fopen("data/double_pendulum_numerical_data.csv", "w");
     FILE* angel_analytical_file = fopen("data/double_pendulum_analytical_data.csv", "w");
-    fprintf(angel_numerical_file, "t, theta1, theta1_v, theta1_a, theta2, theta2_v, theta2_a\n");
-    fprintf(angel_analytical_file, "t, theta1, theta1_v, theta1_a, theta2, theta2_v, theta2_a\n");
+    fprintf(angel_numerical_file, "t, theta1, theta1_v, theta2, theta2_v\n");
+    fprintf(angel_analytical_file, "t, theta1, theta1_v, theta2, theta2_v\n");
     fprintf(angel_numerical_file, "%g", t);
     fprintf(angel_analytical_file, "%g", t);
-    for (int i = 0; i < 6; i++) {
+    for (int i = 0; i < dimension; i++) {
         fprintf(angel_numerical_file, ", %g", y_numerical[i]);
         fprintf(angel_analytical_file, ", %g", y_analytical[i]);
     }
@@ -93,7 +98,8 @@ int main(void) {
         t += delta_t;
         cvc_rk4_step(t, delta_t, y_numerical, ODE_double_pendulum, dimension, NULL);
         double_pendulum_analytical(t, y_analytical, params);
-        fprintf(angel_numerical_file, "%g", t);
+        fprintf(angel_numerical_file, "\n%g", t);
+        fprintf(angel_analytical_file, "\n%g", t);
         for (int i = 0; i < dimension; i++) {
             fprintf(angel_numerical_file, ", %g", y_numerical[i]);
             fprintf(angel_analytical_file, ", %g", y_analytical[i]);
