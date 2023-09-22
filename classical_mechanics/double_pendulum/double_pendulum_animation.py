@@ -39,15 +39,15 @@ def theta_to_coord(theta):
 # returns a double pendulum at 'origin' for given angels and color
 def make_double_pendulum(origin, theta1, theta2, color):
     pendulum_stroke_opacity = 0.75
-    pendulum_stroke_width = 5
+    pendulum_stroke_width = 7.5
 
     m1_coord = origin + theta_to_coord(theta1)
     m2_coord = m1_coord + theta_to_coord(theta2)
     line1 = Line(origin, m1_coord, stroke_opacity = pendulum_stroke_opacity, stroke_width = pendulum_stroke_width, color = color)
     line2 = Line(m1_coord, m2_coord, stroke_opacity = pendulum_stroke_opacity - 0.375, stroke_width = pendulum_stroke_width, color = color)
-    anchor = Dot(origin, color = WHITE, radius = 0.035)
-    mass1 = Dot(m1_coord, color = WHITE, radius = 0.035)
-    mass2 = Dot(m2_coord, color = WHITE, radius = 0.035)
+    anchor = Dot(origin, color = WHITE, radius = 0.05)
+    mass1 = Dot(m1_coord, color = WHITE, radius = 0.05)
+    mass2 = Dot(m2_coord, color = WHITE, radius = 0.05)
     return VGroup(line1, line2, anchor, mass1, mass2)
 
 
