@@ -49,8 +49,8 @@ def make_double_pendulum(origin, theta1, theta2, color):
 
     m1_coord = origin + theta_to_coord(theta1)
     m2_coord = m1_coord + theta_to_coord(theta2)
-    line1 = Line(origin, m1_coord, stroke_opacity = pendulum_stroke_opacity, stroke_width = pendulum_stroke_width, color = color)
-    line2 = Line(m1_coord, m2_coord, stroke_opacity = pendulum_stroke_opacity - 0.375, stroke_width = pendulum_stroke_width, color = color)
+    line1 = Line(origin, m1_coord, stroke_opacity = pendulum_stroke_opacity, stroke_width = pendulum_stroke_width, color = RED)
+    line2 = Line(m1_coord, m2_coord, stroke_opacity = pendulum_stroke_opacity, stroke_width = pendulum_stroke_width, color = BLUE)
     anchor = Dot(origin, color = WHITE, radius = 0.05)
     mass1 = Dot(m1_coord, color = WHITE, radius = 0.05)
     mass2 = Dot(m2_coord, color = WHITE, radius = 0.05)
@@ -129,7 +129,7 @@ class double_pendulum_scene(Scene):
 
         # points in phase space
         theta1_dot = Dot(phase_space.c2p(theta1_numerical[0], theta1_v_numerical[0], 0), radius = 0.05, color = RED, fill_color = RED, fill_opacity = 0.75)
-        theta2_dot = Dot(phase_space.c2p(theta2_numerical[0], theta2_v_numerical[0], 0), radius = 0.05, color = RED, fill_color = RED, fill_opacity = 0.75 - 0.375)
+        theta2_dot = Dot(phase_space.c2p(theta2_numerical[0], theta2_v_numerical[0], 0), radius = 0.05, color = BLUE, fill_color = BLUE, fill_opacity = 0.75)
 
 
         def theta1_dot_updater(dot):
@@ -142,8 +142,8 @@ class double_pendulum_scene(Scene):
         def theta2_dot_updater(dot):
             theta2 = next(theta2_numerical_ps_iter)
             theta2_v = next(theta2_v_numerical_ps_iter)
-            self.add(Line(start = dot.get_center(), end = phase_space.c2p(theta2, theta2_v, 0), stroke_width = 1, color = RED).set_opacity(0.75 - 0.375))
-            dot.become(Dot(phase_space.c2p(theta2, theta2_v, 0), radius = 0.05, color = RED, fill_color = RED, fill_opacity = 0.75 - 0.375))
+            self.add(Line(start = dot.get_center(), end = phase_space.c2p(theta2, theta2_v, 0), stroke_width = 1, color = BLUE).set_opacity(0.75))
+            dot.become(Dot(phase_space.c2p(theta2, theta2_v, 0), radius = 0.05, color = BLUE, fill_color = BLUE, fill_opacity = 0.75))
 
 
         self.add(text_double_pendulum, numerical_anchor, phase_space)#, text_numerical, text_analytical, analytical_anchor)
