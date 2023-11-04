@@ -36,6 +36,12 @@ double cvc_npow(double x, int n);
 // Fakultät einer natürlichen Zahl N_0
 double cvc_factorial(int n);
 
+
+// minimum / maximum of the absolute of two numbers
+double cvc_min(double a, double b);
+double cvc_max(double a, double b);
+
+
 // Norm in 2 / 3 dimensions
 double cvc_norm_2D(double x, double y);
 double cvc_norm_3D(double x, double y, double z);
@@ -52,7 +58,7 @@ double cvc_integrate_simpson(double func(double), double x, int N);
 double cvc_integrate_simpson_2_param(double left, double right, double dx, double func(double, void*), void *params);
 
 // Numerical Differentiation
-double diff(double x, double delta, double func(double));
+double cvc_diff(double x, double delta, double func(double));
 
 // Implementations of the error function 
 double cvc_erf_simpson(double x, double delta_x);

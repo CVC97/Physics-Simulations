@@ -48,6 +48,24 @@ static double cvc_e_y2(double y) {
 }
 
 
+// minimum / maximum of the absolute of two numbers
+double cvc_min(double a, double b) {
+    if (fabs(b) < fabs(a)) {
+        return b;
+    } else {
+        return a;
+    }
+}
+
+double cvc_max(double a, double b) {
+    if (fabs(b) > fabs(a)) {
+        return b;
+    } else {
+        return a;
+    }
+}
+
+
 // Norm in 2 / 3 / N dimensions
 double cvc_norm_2D(double x, double y) {
     return sqrt(cvc_npow(x, 2) + cvc_npow(y, 2));
