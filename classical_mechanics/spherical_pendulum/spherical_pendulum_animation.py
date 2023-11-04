@@ -32,8 +32,14 @@ class PhaseSpace(Mobject):
         self.center = center
         self.side_length = side_length
         self.stroke_with = stroke_width
-        self.x_array = phase_array[0]
-        self.xdot_array = phase_array[1]
+
+        # polar plot
+        self.phi_array = phase_array[0]
+        self.r_array = phase_array[1]
+
+        # cartesian plot
+        self.x_array = phase_array[2]
+        self.xdot_array = phase_array[3]
         self.x_inc = (max(self.x_array) - min(self.x_array)) / 10
         self.xdot_inc = (max(self.xdot_array) - min(self.xdot_array)) / 10
 
@@ -43,12 +49,14 @@ class PhaseSpace(Mobject):
         if labels:
             x_label = Tex(labels[0], color = WHITE, font_size = 156 / self.side_length).next_to(square, DOWN)
             x_label[0][0:1].set_color(RED)
-            x_label[0][2:3].set_color(BLUE)
+            x_label[0][3:7].set_color(BLUE)
             xdot_label = Tex(labels[1], color = WHITE, font_size = 156 / self.side_length).next_to(square, LEFT)
             xdot_label[0][0:2].set_color(RED)
-            xdot_label[0][3:5].set_color(BLUE)
+            #xdot_label[0][3:5].set_color(BLUE)
             self.add(x_label, xdot_label)
 
+        # self.add(PolarPlane(radius_max = max(max(self.r_array), abs(min(self.r_array))) * 0.9, size = self.side_length, tips = True,
+        #     x_axis_config = {"stroke_opacity": 0.25}, y_axis_config = {"stroke_opacity": 0.25}, background_line_style = {"stroke_opacity": 0.25}).move_to(self.center))
 
     def c2p(self, x, y, z):
         ax = Axes(x_range = [min(self.x_array) - self.x_inc, max(self.x_array) + self.x_inc, 1], 
@@ -56,6 +64,12 @@ class PhaseSpace(Mobject):
                   x_length = self.side_length, 
                   y_length = self.side_length).move_to(self.center)
         return ax.c2p(x, y, z)
+    
+    def p2p(self, phi, r, z):
+        pax = PolarPlane(
+            radius_max = max(max(self.r_array), abs(min(self.r_array))) * 1.1, size = self.side_length).move_to(self.center)
+        return pax.pr2pt(r, phi)
+    
 
 
 class spherical_pendulum_scene(ThreeDScene):
@@ -76,7 +90,7 @@ class spherical_pendulum_scene(ThreeDScene):
             x_range = CO3D_x_range, y_range = CO3D_y_range, z_range = CO3D_z_range,
             x_length = 8, y_length = 8, z_length = 5, axis_config = {'tip_length': 0.05, 'tip_width': 0.3}, 
             z_axis_config = {'color': WHITE},
-            ).set_opacity(0.125)
+            ).set_opacity(0.4)
     
         # spherical pendulum anchor
         prism_x = Prism(dimensions = [2, 0.125, 0.125], fill_color = WHITE, stroke_color = GREY).set_opacity(0.75).move_to(ax.c2p(0, 0, 10))
@@ -106,7 +120,12 @@ class spherical_pendulum_scene(ThreeDScene):
             # for i in range(11):
             #     radius = i / 10 * ball_size 
             #     pendulum_group.add(ax.plot_parametric_curve(lambda phi: np.array([radius*np.cos(phi), radius*np.sin(phi), z]), t_range = [0, 2*PI], stroke_opacity = 0.5, color = GREY).move_to(ax.c2p(x, y, 0)))
-            pendulum_group.add(ax.plot_parametric_curve(lambda phi: np.array([0.1*np.cos(phi), 0.1*np.sin(phi), z]), t_range = [0, 2*PI], stroke_opacity = 0.5, color = GREY).move_to(ax.c2p(x, y, 0)))
+            pendulum_group.add(ax.plot_parametric_curve(lambda phi: np.array([0.1*np.cos(phi), 0.1*np.sin(phi), z]), t_range = [0, 2*PI], stroke_opacity = 0.675, stroke_width = 5, color = WHITE).move_to(ax.c2p(x, y, 0)))
+
+            # pendulum in rect
+            line_rect = Line(start = [5.25, -0.25+3/2, 0], end = [5.25, -0.25+3/2 - r / 8 * 3, 0])
+            line_sphere = Circle(radius = 0.1, color = RED, fill_color = RED, fill_opacity = 1).move_to([5.25, -0.25+3/2 - r / 8 * 3, 0])
+            pendulum_group.add(line_rect, line_sphere)
             return pendulum_group
 
 
@@ -123,27 +142,34 @@ class spherical_pendulum_scene(ThreeDScene):
 
 
         # phase space
-        phase_space = PhaseSpace(center = [3.25, -0.25, 0], phase_array = ([0, 2*PI], np.concatenate((phi_dot, theta_dot))), 
-            side_length = 3.75, labels = (r'$\varphi\,/\,\vartheta$', r'$\dot{\varphi}\,/\,\dot{\vartheta}$'))
+        phase_space = PhaseSpace(center = [2.75, -0.25, 0], phase_array = (np.array([0, 2*PI]), phi_dot, theta, theta_dot), 
+            side_length = 3.75, labels = (r'$\vartheta$\,\big|\,$\varphi,\dot{\varphi}$\,(polar)', r'$\dot{\vartheta}$'))
         
 
         # points in phase space
-        phi_phase_space = Dot(phase_space.c2p(phi[0], phi_dot[0], 0), radius = 0.05, color = RED, fill_color = RED, fill_opacity = 0.75)
-        theta_phase_space = Dot(phase_space.c2p(theta[0], theta_dot[0], 0), radius = 0.05, color = BLUE, fill_color = BLUE, fill_opacity = 0.75)
+        phi_phase_space = Dot(phase_space.p2p(phi[0], phi_dot[0], 0), radius = 0.05, color = BLUE, fill_color = BLUE, fill_opacity = 0.75)
+        theta_phase_space = Dot(phase_space.c2p(theta[0], theta_dot[0], 0), radius = 0.05, color = RED, fill_color = RED, fill_opacity = 0.75)
 
 
         def phi_ps_updater(dot):
             phi = next(phi_ps_iter)
             phi_dot = next(phi_dot_ps_iter)
-            self.add(Line(start = dot.get_center(), end = phase_space.c2p(phi % (2*PI), phi_dot, 0), stroke_width = 1, color = RED).set_opacity(0.75))
-            dot.become(Dot(phase_space.c2p(phi, phi_dot, 0), radius = 0.05, color = RED, fill_color = RED, fill_opacity = 0.75))
+            self.add(Line(start = dot.get_center(), end = phase_space.p2p(phi, phi_dot, 0), stroke_width = 1, color = BLUE).set_opacity(0.75))
+            dot.become(Dot(phase_space.p2p(phi, phi_dot, 0), radius = 0.05, color = BLUE, fill_color = BLUE, fill_opacity = 0.75))
 
 
         def theta_ps_updater(dot):
             theta = next(theta_ps_iter)
             theta_dot = next(theta_dot_ps_iter)
-            self.add(Line(start = dot.get_center(), end = phase_space.c2p(theta, theta_dot, 0), stroke_width = 1, color = BLUE).set_opacity(0.75))
-            dot.become(Dot(phase_space.c2p(theta, theta_dot, 0), radius = 0.05, color = BLUE, fill_color = BLUE, fill_opacity = 0.75))
+            self.add(Line(start = dot.get_center(), end = phase_space.c2p(theta, theta_dot, 0), stroke_width = 1, color = RED).set_opacity(0.75))
+            dot.become(Dot(phase_space.c2p(theta, theta_dot, 0), radius = 0.05, color = RED, fill_color = RED, fill_opacity = 0.75))
+
+
+        # length diagram
+        rect = Rectangle(width = 0.5, height = 3.75, stroke_width = 1).move_to([5.25, -0.25, 0])
+        rect_top_fill = Rectangle(width = 0.5, height = (- (-0.25+3/2) + (-0.25+3.75/2)), stroke_width = 0, color = WHITE, fill_opacity = 0.75).move_to([5.25, (-0.25+3/2 + (-0.25+3.75/2)) / 2, 0])
+        rect_label = Tex(r'$l(t)$', color = WHITE, font_size = 156 / 3.75).next_to(rect, DOWN)
+        self.add(rect, rect_top_fill, rect_label)
 
 
         self.add(text_spherical_pendulum)

@@ -74,7 +74,11 @@ class PhaseSpace(Mobject):
 
         if labels:
             x_label = Tex(labels[0], color = WHITE, font_size = 156 / self.side_length).next_to(square, DOWN)
+            x_label[0][0:2].set_color(RED)
+            x_label[0][4:6].set_color(BLUE)
             xdot_label = Tex(labels[1], color = WHITE, font_size = 156 / self.side_length).next_to(square, LEFT)
+            xdot_label[0][0:3].set_color(RED)
+            xdot_label[0][5:8].set_color(BLUE)
             self.add(x_label, xdot_label)
 
 
@@ -124,7 +128,7 @@ class double_pendulum_scene(Scene):
 
         # phase space
         phase_space = PhaseSpace(center = [3.25, -0.25, 0], phase_array = (np.concatenate((theta1_numerical, theta2_numerical)), np.concatenate((theta1_v_numerical, theta2_v_numerical))), 
-            side_length = 3.75, labels = (r'$\varphi$', r'$\dot{\varphi}$'))
+            side_length = 3.75, labels = (r'$\theta_1\,\big|\,\theta_2$', r'$\dot{\theta}_1\,\big|\,\dot{\theta}_2$'))
         
 
         # points in phase space

@@ -13,8 +13,8 @@ const double m = 10;
 
 // initial conditions
 const double PHI = -cvc_PI*0.6;
-const double THETA = -6.5/8*cvc_PI;
-const double PHI_DOT = 0.25;
+const double THETA = -7.0/8*cvc_PI;
+const double PHI_DOT = 1;
 const double THETA_DOT = 0;
 
 
@@ -27,7 +27,7 @@ const double smoothing_factor = 1e-10;
 
 // function describing the pendulums length for a given time 't'
 double pendulum_length(double t) {
-    return 6 + sin(t / 10);
+    return 5.5 + 1*sin(t / 2);
 }
 
 
@@ -47,7 +47,7 @@ int ODE_spherical_pendulum(double t, const double y[], double f[], void *params)
     f[2] = theta_dot;
 
     // calculate the accelerations of the system
-    f[1] = phi_dot * (2*l_dot/l - cos(theta)*theta_dot/cvc_max(sin(theta), smoothing_factor));
+    f[1] = phi_dot * (2*l_dot/l - cos(theta)*theta_dot/(sin(theta) + smoothing_factor));
     f[3] = (cvc_EARTH_GRAVITATION*sin(theta) - 2*theta_dot*l_dot) / l + sin(theta)*cos(theta)*cvc_npow(phi_dot, 2);
     return 0;
 }
