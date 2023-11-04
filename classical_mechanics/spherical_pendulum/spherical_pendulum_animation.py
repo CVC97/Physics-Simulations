@@ -1,6 +1,30 @@
 from manim import *
 
 
+# processing data
+numerical_data = np.loadtxt("data/spherical_pendulum_data.csv", delimiter = ",", skiprows = 1)
+speed_numerical = 30
+
+length = numerical_data[:,1]
+phi = numerical_data[:,2]
+phi_dot = numerical_data[:,3]
+theta = numerical_data[:,4]
+theta_dot = numerical_data[:,5]
+
+
+# iter for all angels
+length_iter = iter(length[::speed_numerical])
+phi_iter = iter(phi[::speed_numerical])
+theta_iter = iter(theta[::speed_numerical])
+
+# iter for the phase space
+phi_ps_iter = iter(phi[::speed_numerical])
+theta_ps_iter = iter(theta[::speed_numerical])
+phi_dot_ps_iter = iter(phi_dot[::speed_numerical])
+theta_dot_ps_iter = iter(theta_dot[::speed_numerical])
+
+
+
 # phase space class
 class PhaseSpace(Mobject):
     def __init__(self, center, phase_array, side_length = 3, stroke_width = 1, labels = 0, **kwargs):
@@ -18,7 +42,11 @@ class PhaseSpace(Mobject):
 
         if labels:
             x_label = Tex(labels[0], color = WHITE, font_size = 156 / self.side_length).next_to(square, DOWN)
+            x_label[0][0:1].set_color(RED)
+            x_label[0][2:3].set_color(BLUE)
             xdot_label = Tex(labels[1], color = WHITE, font_size = 156 / self.side_length).next_to(square, LEFT)
+            xdot_label[0][0:2].set_color(RED)
+            xdot_label[0][3:5].set_color(BLUE)
             self.add(x_label, xdot_label)
 
 
@@ -36,7 +64,7 @@ class spherical_pendulum_scene(ThreeDScene):
         self.add(CVC)
 
         # headline
-        text_spherical_pendulum = Title(r"Spherical Pendulum of variable Length", font_size = 48).align_on_border(UP + LEFT, buff = 0.5).shift(0.5 * RIGHT) 
+        text_spherical_pendulum = Title(r"Spherical Pendulum of Variable Length", font_size = 48).align_on_border(UP + LEFT, buff = 0.5).shift(0.5 * RIGHT) 
 
 
         # 3D coordinate system with spherical pendulum
@@ -75,14 +103,60 @@ class spherical_pendulum_scene(ThreeDScene):
             pendulum_group.add(line, sphere)
 
             # shadow
-            for i in range(11):
-                radius = i / 10 * ball_size 
-                pendulum_group.add(ax.plot_parametric_curve(lambda phi: np.array([radius*np.cos(phi), radius*np.sin(phi), z]), t_range = [0, 2*PI], stroke_opacity = 0.5, color = GREY).move_to(ax.c2p(x, y, 0)))
+            # for i in range(11):
+            #     radius = i / 10 * ball_size 
+            #     pendulum_group.add(ax.plot_parametric_curve(lambda phi: np.array([radius*np.cos(phi), radius*np.sin(phi), z]), t_range = [0, 2*PI], stroke_opacity = 0.5, color = GREY).move_to(ax.c2p(x, y, 0)))
+            pendulum_group.add(ax.plot_parametric_curve(lambda phi: np.array([0.1*np.cos(phi), 0.1*np.sin(phi), z]), t_range = [0, 2*PI], stroke_opacity = 0.5, color = GREY).move_to(ax.c2p(x, y, 0)))
             return pendulum_group
 
 
-        pendulum = create_pendulum(7, -PI*0.6, -7/8*PI)
+        pendulum = create_pendulum(length[0], phi[0], theta[0])
+
+
+        # updates pendulum
+        def pendulum_updater(pendulum):
+            length = next(length_iter)
+            phi = next(phi_iter)
+            theta = next(theta_iter)
+            pendulum.become(create_pendulum(length, phi, theta))
+
+
+
+        # phase space
+        phase_space = PhaseSpace(center = [3.25, -0.25, 0], phase_array = ([0, 2*PI], np.concatenate((phi_dot, theta_dot))), 
+            side_length = 3.75, labels = (r'$\varphi\,/\,\vartheta$', r'$\dot{\varphi}\,/\,\dot{\vartheta}$'))
+        
+
+        # points in phase space
+        phi_phase_space = Dot(phase_space.c2p(phi[0], phi_dot[0], 0), radius = 0.05, color = RED, fill_color = RED, fill_opacity = 0.75)
+        theta_phase_space = Dot(phase_space.c2p(theta[0], theta_dot[0], 0), radius = 0.05, color = BLUE, fill_color = BLUE, fill_opacity = 0.75)
+
+
+        def phi_ps_updater(dot):
+            phi = next(phi_ps_iter)
+            phi_dot = next(phi_dot_ps_iter)
+            self.add(Line(start = dot.get_center(), end = phase_space.c2p(phi % (2*PI), phi_dot, 0), stroke_width = 1, color = RED).set_opacity(0.75))
+            dot.become(Dot(phase_space.c2p(phi, phi_dot, 0), radius = 0.05, color = RED, fill_color = RED, fill_opacity = 0.75))
+
+
+        def theta_ps_updater(dot):
+            theta = next(theta_ps_iter)
+            theta_dot = next(theta_dot_ps_iter)
+            self.add(Line(start = dot.get_center(), end = phase_space.c2p(theta, theta_dot, 0), stroke_width = 1, color = BLUE).set_opacity(0.75))
+            dot.become(Dot(phase_space.c2p(theta, theta_dot, 0), radius = 0.05, color = BLUE, fill_color = BLUE, fill_opacity = 0.75))
+
 
         self.add(text_spherical_pendulum)
-        self.add(spherical_pendulum_ax_group)
-        self.add(pendulum)
+        self.add(spherical_pendulum_ax_group, phase_space)
+        self.add(pendulum, phi_phase_space, theta_phase_space)
+        
+        self.wait(1.5)
+        timeline = ValueTracker(0)
+        pendulum.add_updater(pendulum_updater)
+        phi_phase_space.add_updater(phi_ps_updater)
+        theta_phase_space.add_updater(theta_ps_updater)
+        self.play(timeline.animate.set_value(5), rate_func = linear, run_time = 20)
+        pendulum.remove_updater(pendulum_updater)
+        phi_phase_space.remove_updater(phi_ps_updater)
+        theta_phase_space.remove_updater(theta_ps_updater)
+        self.wait(5)
