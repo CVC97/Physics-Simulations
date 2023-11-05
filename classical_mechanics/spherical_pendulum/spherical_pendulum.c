@@ -31,6 +31,7 @@ double pendulum_length(double t) {
 }
 
 
+// ODE for the spherical pendulum
 int ODE_spherical_pendulum(double t, const double y[], double f[], void *params) {
     // calculating length and change in length of the pendulum
     double l = pendulum_length(t);
