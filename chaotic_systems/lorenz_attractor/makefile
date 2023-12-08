@@ -25,7 +25,7 @@ run: $(BINARY)
 
 # animate
 animate:
-	manim -pqh --fps 10 $(BINARY)_animation.py $(BINARY)_scene
+	manim -pqh --fps 60 $(BINARY)_animation.py $(BINARY)_scene
 
 
 # clean

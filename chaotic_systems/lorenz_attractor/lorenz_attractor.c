@@ -14,8 +14,8 @@ const double B = 1;
 
 
 // integration parameters
-const double T_max = 100;
-const double delta_t = 10e-4;
+const double T_max = 10000;
+const double delta_t = 10e-3;
 const int DIMENSION = 3;
 const int N_TRAJECTORIES = 3;
 
