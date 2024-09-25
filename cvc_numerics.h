@@ -81,6 +81,7 @@ void cvc_euler_step(double t, double delta_t, double y[], cvc_ode_func func, int
 void cvc_rk2_step(double t, double delta_t, double y[], cvc_ode_func func, int dimension, void *params);
 void cvc_rk4_step(double t, double delta_t, double y[], cvc_ode_func func, int dimension, void *params);
 void cvc_verlet_step(double t, double delta_t, double y[], cvc_ode_func func, int dimension, void *params);
+void cvc_verlet_step2(double t, double delta_t, double y[], cvc_ode_func func, int dimension, void *params);
 
 
 #endif

@@ -312,3 +312,26 @@ void cvc_verlet_step(double t, double delta_t, double y[], cvc_ode_func func, in
     free(a1), free(a2);
     return;
 }
+
+
+// velocity verlet step function given the current state y[] of a system and an (empty) array f for the derivative of the state
+void cvc_verlet_step2(double t, double delta_t, double y[], cvc_ode_func func, int dimension, void *params) {
+    int dim = dimension / 2;                                        // reduce the dimension (half is coordinate, half velocity)
+    double *f = (double*) calloc(dimension, sizeof(double));
+    func(t, y, f, params);                                          // calculation of a1 = f(t,y)
+    // updating the velocities of y (second half of y) using the forces of f (second half of a1)
+    for (int i = 0; i < dim; i++) {                             
+        y[i+dim] += f[i+dim] * delta_t / 2;
+    }                         
+    // using the updated velocities of y (second half of y) to update its positions (first half of y)
+    for (int i = 0; i < dim; i++) {                             
+        y[i] += y[i+dim] * delta_t;                               
+    }
+    func(t, y, f, params);                                          // calculation of a1 = f(t+h,y) using the updated y positions
+    // using the force at t+h in f (second half of f) to update the velocities in y (second half of y)
+    for (int i = 0; i < dim; i++) {                             
+        y[i+dim] += f[i+dim] * delta_t / 2;
+    }
+    free(f);
+    return;
+}
