@@ -2,6 +2,7 @@ from manim import *
 
 
 TBP_2D_data = np.loadtxt("data/ThreeBody_2D_data.csv", delimiter = ",", skiprows = 1)
+# TBP_2D_data = np.loadtxt("data/A1a_Argon_Positions.csv", delimiter = ",", skiprows = 1)
 TBP_3D_data = np.loadtxt("data/ThreeBody_3D_data.csv", delimiter = ",", skiprows = 1)
 
 r1_2D = TBP_2D_data[:,1:4]
