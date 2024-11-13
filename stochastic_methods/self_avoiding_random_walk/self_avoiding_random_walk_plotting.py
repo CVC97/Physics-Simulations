@@ -49,7 +49,7 @@ if (medium_status_array[0] == 1):
 if (low_status_array[0] == 1):
     hydrophobicity_low_array[15,15] = 1
 
-# high:iterate through polymers
+# high: iterate through polymers
 for i in range(1, len_high):
     m_prior = high_m_array[i-1]
     n_prior = high_n_array[i-1]
