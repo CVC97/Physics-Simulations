@@ -63,7 +63,7 @@ class PhaseSpace(Mobject):
         return ax.c2p(x, y, z)
     
     # method to receive a point in the polar plot
-    def p2p(self, phi, r, z):
+    def p2p(self, phi, r):
         pax = PolarPlane(
             radius_max = max(max(self.r_array), abs(min(self.r_array))) * 1.1, size = self.side_length).move_to(self.center)
         return pax.pr2pt(r, phi)
