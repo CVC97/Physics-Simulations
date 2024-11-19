@@ -28,8 +28,8 @@ int ODE_driven_damped_pendulum(double t, const double y[], double f[], void *par
 
 int main(void) {
     // physical parameters
-    double A = 2;                                                     // VARIATION of A in [0.1, 2]
-    double omega = 1;                                                 // VARIATION of omega in [0.2, 1]
+    double A = 1;                                                     // VARIATION of A in [0.1, 2]
+    double omega = 0.5;                                                 // VARIATION of omega in [0.2, 1]
     double gamma = 0.2;                                                 // gamma consistent across parameter variation
     double params[3] = {A, omega, gamma};                               // parameter array
 

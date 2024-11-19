@@ -2,7 +2,7 @@ from manim import *
 
 
 # processing data
-pendulum_data = np.loadtxt("data/driven_damped_pendulum_2_1_data.csv", delimiter = ",", skiprows = 1)
+pendulum_data = np.loadtxt("data/driven_damped_pendulum_1_0.5_data.csv", delimiter = ",", skiprows = 1)
 
 time = pendulum_data[:,0]
 theta = pendulum_data[:,1]
