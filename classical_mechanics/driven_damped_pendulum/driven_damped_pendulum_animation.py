@@ -1,8 +1,13 @@
 from manim import *
 
 
+# global constants
+A = 2
+omega = 1
+
+
 # processing data
-pendulum_data = np.loadtxt("data/driven_damped_pendulum_1_0.5_data.csv", delimiter = ",", skiprows = 1)
+pendulum_data = np.loadtxt(f"data/driven_damped_pendulum_{A}_{omega}_data.csv", delimiter = ",", skiprows = 1)
 
 time = pendulum_data[:,0]
 theta = pendulum_data[:,1]
@@ -12,6 +17,7 @@ theta_v = pendulum_data[:,2]
 # iter for pendulum and phase space
 animation_speed = 5
 
+time_iter = iter(time[::animation_speed])
 theta_iter = iter(theta[::animation_speed])
 theta_v_iter = iter(theta_v[::animation_speed])
 
@@ -61,7 +67,8 @@ class DrivenPendulum(Mobject):
     # method to rotate the pendulum according to the given angle
     def get_pendulum(self, theta):
         # inner pendulum
-        pendulum_center = Circle(radius = 0.075*self.radius, color = BLACK, fill_color = BLACK, fill_opacity = 1, stroke_opacity = 0.5).move_to(self.center)
+        pendulum_center = Circle(radius = 0.075*self.radius, color = BLACK, fill_color = BLACK, fill_opacity = 1, stroke_opacity = 0.5, stroke_width = 8).move_to(self.center)
+        pendulum_center.z_index = 2
         pendulum_top_connector = Line(start = self.center, end = self.center + 0.925*self.radius*UP, color = WHITE, stroke_width = 20*self.radius)
         pendulum_left_connector = Line(start = self.center, end = self.center + 0.925*self.radius*UP, color = WHITE, stroke_width = 20*self.radius).rotate(about_point = self.center, angle = 2/3*PI)
         pendulum_right_connector = Line(start = self.center, end = self.center + 0.925*self.radius*UP, color = WHITE, stroke_width = 20*self.radius).rotate(about_point = self.center, angle = -2/3*PI)
@@ -81,8 +88,14 @@ class DrivenPendulum(Mobject):
 
 
     # method to return the motor
-    def get_motor(self, A, omega, t):
-        return
+    def get_motor(self, t):
+        motor_radius = self.radius/5+A/10
+        motor_circle = Circle(radius = motor_radius, color = LIGHT_GRAY, stroke_width = 10*self.radius).move_to(self.center) 
+        motor_line = Line(start = self.center + motor_radius*UP, end = self.center - motor_radius*UP, color = LIGHT_GRAY, stroke_width = 20*self.radius)
+        motor_line.z_index = 1
+        motor_group = VGroup(motor_circle, motor_line)
+        motor_group.rotate(about_point = self.center, angle = omega*t)
+        return motor_group
 
 
 
@@ -99,6 +112,7 @@ class driven_damped_pendulum_scene(Scene):
         # parameters
         pendulum_center = np.array([-3, -0.25, 0])
         pendulum_radius = 2
+        t = next(time_iter)
         rotated_pendulum_theta = next(theta_iter)
 
         phase_space_center = np.array([3, -0.25, 0])
@@ -109,10 +123,15 @@ class driven_damped_pendulum_scene(Scene):
 
         # pendulum
         pendulum = DrivenPendulum(pendulum_center, pendulum_radius)
+
         rotated_pendulum = pendulum.get_pendulum(rotated_pendulum_theta)
         rotated_pendulum.iter = theta_iter
         rotated_pendulum.getter = pendulum.get_pendulum
-        self.add(pendulum, rotated_pendulum)
+
+        motor = pendulum.get_motor(t)
+        motor.iter = time_iter
+        motor.getter = pendulum.get_motor
+        self.add(pendulum, rotated_pendulum, motor)
 
         # phase space
         phase_space = PhaseSpace(center = phase_space_center, phase_array = (np.array([0, 2*PI]), theta_v), side_length = phase_space_side_length, labels = (r'$\theta$, $\dot{\theta}$ (polar)', ''))
@@ -146,6 +165,7 @@ class driven_damped_pendulum_scene(Scene):
         timeline = ValueTracker(0)
 
         rotated_pendulum.add_updater(pendulum_updater)
+        motor.add_updater(pendulum_updater)
         phase_space_dot.add_updater(phase_space_updater)
 
         self.play(timeline.animate.set_value(10), rate_func = linear, run_time = 25)
