@@ -33,12 +33,16 @@ int main(void) {
     while (mu_start <= mu_end) {
         double x_0 = x_start;                                           // resetting the initial value for x
 
+        // first two columns
+        fprintf(x_file, "%g, %g", mu_start, x_0);
+
         // generating N items
-        for (int i = 0; i <= N; i++) {
-            
+        for (int i = 0; i < N; i++) {
+            x_0 = get_nonliner_next(x_0, mu_start);
+            fprintf(x_file, ", %g", x_0);
         }
 
-
+        fprintf(x_file, "\n");                                          // linebreak for next mu
         mu_start += delta_mu;                                           // increment the growth parameter mu                         
     }
 

@@ -23,6 +23,11 @@ run: $(BINARY)
 	./$< $(ARGS)
 
 
+# plot
+plot:
+	python3.12 $(BINARY)_plotting.py
+
+
 # animate
 animate:
 	manim -pqh --fps 60 $(BINARY)_animation.py $(BINARY)_scene
