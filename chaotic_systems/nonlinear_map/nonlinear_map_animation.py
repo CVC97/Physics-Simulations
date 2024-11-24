@@ -202,7 +202,7 @@ class nonlinear_map_scene(Scene):
         fourier_space_plot = fourier_space_diagram.make_plot(n_long_array[1:], k_n_long_array[0,1:], BLUE)
         self.add(real_space_plot, fourier_space_plot)
 
-        mu_text = Tex("$\mu={:.3f)}$".format(mu), color = WHITE, font_size = 36).move_to(np.array([0, 2.25, 0]))
+        mu_text = Tex("$\mu={:.2f}$".format(mu_long_array[0]), color = WHITE, font_size = 36).move_to(np.array([0, 2.25, 0]))
         self.add(mu_text)
 
 
@@ -214,7 +214,7 @@ class nonlinear_map_scene(Scene):
             self.remove(real_space_plot, fourier_space_plot, mu_text)
             real_space_plot = real_space_diagram.make_plot(n_long_array, x_n_long_array[i], RED)
             fourier_space_plot = fourier_space_diagram.make_plot(n_long_array[1:], k_n_long_array[i,1:], BLUE)
-            mu_text = Tex("$\mu={:.3f)}$".format(mu), color = WHITE, font_size = 36).move_to(np.array([0, 2.25, 0]))
+            mu_text = Tex("$\mu={:.2f}$".format(mu), color = WHITE, font_size = 36).move_to(np.array([0, 2.25, 0]))
             self.add(real_space_plot, fourier_space_plot, mu_text)
             if mu < mu_edge_1:
                 self.wait(0.02)
