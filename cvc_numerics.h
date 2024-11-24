@@ -52,7 +52,7 @@ double* cvc_vector_product(const double a[], const double b[]);
 
 
 // Numerical Integration
-double cvc_integrate(double x, int N);
+// double cvc_integrate(double x, int N);
 double cvc_integrate_trapez(double left, double right, int N, double integrand(double));
 double cvc_integrate_simpson(double func(double), double x, int N);
 double cvc_integrate_simpson_2_param(double left, double right, double dx, double func(double, void*), void *params);
