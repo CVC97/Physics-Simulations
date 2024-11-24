@@ -105,7 +105,7 @@ class driven_damped_pendulum_scene(Scene):
         self.add(CVC) 
 
         # headline
-        text_double_pendulum = Title(r"Driven Damped Pendulum", font_size = 48).align_on_border(UP + LEFT, buff = 0.5).shift(0.5 * RIGHT) 
+        text_double_pendulum = Title(r"Driven and Damped Pendulum", font_size = 48).align_on_border(UP + LEFT, buff = 0.5).shift(0.5 * RIGHT) 
         self.add(text_double_pendulum)
 
 
